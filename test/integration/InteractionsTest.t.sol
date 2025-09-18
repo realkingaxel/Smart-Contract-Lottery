@@ -49,7 +49,7 @@ contract InteractionsTest is Test {
         HelperConfig.NetworkConfig memory sepoliaConfig = helperConfig.getConfig();
         assert(sepoliaConfig.vrfCoordinator != address(0));
         assert(sepoliaConfig.link != address(0));
-        assert(sepoliaConfig.subscriptionId == 0);
+        assert(sepoliaConfig.subscriptionId == 60795102219225105317606911915945976794363532223707470219973955864490482482065);
         assert(sepoliaConfig.account != address(0));
         assert(sepoliaConfig.entranceFee == 0.01 ether);
         assert(sepoliaConfig.interval == 30);
