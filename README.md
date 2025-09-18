@@ -1,66 +1,109 @@
-## Foundry
+# Lottery (Foundry + Chainlink VRF v2.5)
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+A decentralized, automated lottery (raffle) built with **Foundry** and **Chainlink VRF v2.5**. Players pay an entrance fee to join; after a configurable interval, a verifiably random winner is drawn and the pot is paid out.
 
-Foundry consists of:
+## ✨ Features
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+* Solidity `0.8.19` with modern patterns and custom errors
+* Verifiable randomness via **Chainlink VRF v2.5**
+* Configurable interval & entrance fee
+* Scripts to **deploy**, **create/fund VRF subscription**, and **add consumer**
+* Unit & integration tests with Foundry
+* One-command deployment & (optional) Etherscan verification
 
-## Documentation
+## 📦 Tech Stack
 
-https://book.getfoundry.sh/
+* **Foundry** (forge/anvil/cast)
+* **Chainlink VRF v2.5** (`@chainlink/contracts`)
+* **forge-std**, **solmate**, **foundry-devops**
 
-## Usage
+## 📁 Project Structure
 
-### Build
-
-```shell
-$ forge build
+```
+src/
+  Raffle.sol            # Core raffle contract (VRF v2.5)
+script/
+  DeployRaffle.s.sol    # Deployment entrypoint
+  HelperConfig.s.sol    # Network configs (Sepolia & Anvil)
+  Interactions.s.sol    # Create/fund subscription & add consumer
+test/
+  unit/RaffleTest.t.sol
+  integration/InteractionsTest.t.sol
+foundry.toml
+Makefile
 ```
 
-### Test
+## 🔧 Prerequisites
 
-```shell
-$ forge test
+* **Foundry**: `curl -L https://foundry.paradigm.xyz | bash` then `foundryup`
+* Funded wallet (for testnet deploys)
+
+## 🔐 Environment
+
+Create a `.env` in the repo root:
+
+```bash
+# RPCs
+SEPOLIA_RPC_URL="https://sepolia.infura.io/v3/<YOUR_KEY>"
+
+# Wallet (use a throwaway/test key)
+PRIVATE_KEY="0xYOUR_PRIVATE_KEY"
+
+# Optional: verification
+ETHERSCAN_API_KEY="<YOUR_ETHERSCAN_API_KEY>"
 ```
 
-### Format
+> Never commit your real private keys. Use test keys and `.gitignore`.
 
-```shell
-$ forge fmt
+## ▶️ Install & Build
+
+```bash
+
+#via Makefile:
+make install
+
+# Build
+make build
 ```
 
-### Gas Snapshots
+## 🧪 Test
 
-```shell
-$ forge snapshot
+```bash
+# Run all tests
+forge test
+
+# Verbose, with traces
+forge test -vvv
 ```
 
-### Anvil
+## 🌐 Sepolia Deploy
 
-```shell
-$ anvil
+1. Fund your deployer account on Sepolia.
+2. Ensure `.env` is set.
+3. Deploy:
+
+> You can use the Makefile:
+
+```bash
+make deploy
 ```
 
-### Deploy
+> The **Sepolia** defaults (VRF coordinator, LINK, gas lane, etc.) are provided in `HelperConfig.s.sol`.
+> For local (Anvil), mocks are deployed automatically and the same scripts Just Work™.
 
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
 
-### Cast
+## 🧩 Notes & Tips
 
-```shell
-$ cast <subcommand>
-```
+* The raffle uses an **interval** to determine when upkeep can run; ensure time has passed and there are players/funds.
+* On local chains, the VRF mock is used; on Sepolia, you must have a **VRF subscription**, **funded with LINK**, and the **raffle added as a consumer**.
+* Adjust fee/interval/gas settings in `HelperConfig.s.sol` as needed.
 
-### Help
+## ✅ License
 
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+MIT — see SPDX headers.
+
+## 🙏 Acknowledgments
+
+Inspired by Cyfrin/Patrick Collins’ Foundry patterns and Chainlink examples.
+
+---
