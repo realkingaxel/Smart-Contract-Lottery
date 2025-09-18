@@ -178,18 +178,21 @@ contract RaffleTest is Test {
         }
         _;
     }
-    
-    
-    function testFullfillRandomWordsCanOnlyBeCalledAfterPerformUpKeep(uint256 randomRequestId) public raffleEntered skipFork{
+
+    function testFullfillRandomWordsCanOnlyBeCalledAfterPerformUpKeep(uint256 randomRequestId)
+        public
+        raffleEntered
+        skipFork
+    {
         vm.expectRevert(VRFCoordinatorV2_5Mock.InvalidRequest.selector);
         VRFCoordinatorV2_5Mock(vrfCoordinator).fulfillRandomWords(randomRequestId, address(raffle));
     }
 
-    function testFullfillRandomWordsPicksAWinnerResetsAndSendsMoney() public raffleEntered skipFork{
+    function testFullfillRandomWordsPicksAWinnerResetsAndSendsMoney() public raffleEntered skipFork {
         uint256 additionalEntrants = 5; // 6 people total
         uint256 startingIndex = 1;
         address expectedWinner = address(1);
-        for (uint256 i = startingIndex; i < additionalEntrants + startingIndex; i++){
+        for (uint256 i = startingIndex; i < additionalEntrants + startingIndex; i++) {
             address player = address(uint160(startingIndex));
             hoax(player, STARTING_USER_BALANCE);
             raffle.EnterRaffle{value: entranceFee}();
@@ -202,7 +205,7 @@ contract RaffleTest is Test {
         bytes32 requestId = entries[1].topics[1];
         VRFCoordinatorV2_5Mock(vrfCoordinator).fulfillRandomWords(uint256(requestId), address(raffle));
 
-        address recentWinner = raffle.getRecentWinner(); 
+        address recentWinner = raffle.getRecentWinner();
         Raffle.RaffleState raffleState = raffle.getRaffleState();
         uint256 winnerBalance = recentWinner.balance;
         uint256 endingTimeStamp = raffle.getLastTimeStamp();
@@ -212,7 +215,6 @@ contract RaffleTest is Test {
         assert(uint256(raffleState) == 0);
         assert(winnerBalance == initialBalance + prize);
         assert(endingTimeStamp > startingTimeStamp);
-
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -240,5 +242,4 @@ contract RaffleTest is Test {
         address playerFromContract = raffle.getPlayer(0);
         assert(playerFromContract == PLAYER);
     }
-
 }
