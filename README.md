@@ -101,9 +101,3 @@ make deploy
 ## ✅ License
 
 MIT — see SPDX headers.
-
-## 🙏 Acknowledgments
-
-Inspired by Cyfrin/Patrick Collins’ Foundry patterns and Chainlink examples.
-
----
