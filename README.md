@@ -101,3 +101,6 @@ make deploy
 ## ✅ License
 
 MIT — see SPDX headers.
+
+--------------
+This repository was built while following the Cyfrin Updraft foundry course.
